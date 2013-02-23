@@ -2,8 +2,8 @@
 	
     <property environment="env"/>
     <property name="debuglevel" value="source,lines,vars"/>
-    <property name="target" value="1.7"/>
-    <property name="source" value="1.7"/>
+    <property name="target" value="1.6"/>
+    <property name="source" value="1.6"/>
 	
     <path id="json-server.classpath">
         <pathelement location="bin"/>
@@ -49,6 +49,12 @@
 	
     <target name="ServerBootstrap">
         <java classname="server.ServerBootstrap" failonerror="true" fork="yes">
+            <classpath refid="json-server.classpath"/>
+        </java>
+    </target>
+
+    <target name="ChurchTicTacToeAI">
+        <java classname="client.ChurchTicTacToeAI" failonerror="true" fork="yes">
             <classpath refid="json-server.classpath"/>
         </java>
     </target>
