@@ -85,7 +85,11 @@ public class TicTacToe implements GenGame {
 						whoWon = id;
 						gameRunning = false;
 					}
+				}else{
+					error = 2;
 				}
+			}else{
+				error = 1;
 			}
 		}
 
@@ -158,6 +162,11 @@ public class TicTacToe implements GenGame {
 	 */
 	private boolean checkMove(int x, int y) {
 		return (board[x][y] == -1);
+	}
+
+	@Override
+	public boolean doInit(int gId) {
+		return true;
 	}
 
 }

@@ -8,8 +8,6 @@ import org.json.JSONObject;
 
 public class Game {
 	
-	
-	
 	public volatile boolean running = false;
 	public Player[] players = new Player[GameManager.MAX_PLAYERS];
 	private AtomicInteger pCount = new AtomicInteger(0);
@@ -67,25 +65,52 @@ public class Game {
 
 	public JSONObject connectPlayer(int gId) {
 		int me = addPlayer(gId);
-		while(pCount.get()!=GameManager.MAX_PLAYERS){
+		boolean successCode = gameHook.doInit(gId);
+		String errorMessage = "";
+		
+		int totalTimeSlept = 0;
+		
+		while(pCount.get()!=GameManager.MAX_PLAYERS && totalTimeSlept < ServerBootstrap.TIMEOUT_LENGTH){
 			try {
 				Thread.sleep(100);
+				totalTimeSlept += 100;
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
 		}
-		return players[me].toJSON();
+		
+		//Pretty readable...
+		//check for the various things that can go wrong above and deal with them
+		//TODO Make these integer error codes that correspond with the API
+		if(me != -1){
+			if(successCode){
+				if(totalTimeSlept < ServerBootstrap.TIMEOUT_LENGTH){
+					
+				}else{
+					errorMessage = "gameConnectionTimeout";
+				}
+			}else{
+				errorMessage = "gameInitError";
+			}
+		}else{
+			errorMessage = "addPlayerError";
+		}
+		
+		if(errorMessage.equals("")){
+			return players[me].toJSON();
+		}else{
+			try{
+				return new JSONObject("{\"error\":\""+errorMessage+"\"}");
+			}catch(JSONException e){
+				e.printStackTrace();
+			}
+		}
+		return null;
 	}
 
 	public JSONObject getStatus(JSONObject a) throws JSONException {
-		int id = Integer.parseInt(a.get("ID").toString());
-		int auth = Integer.parseInt(a.get("AUTH").toString());
 		
-		if(getPlayerById(id).getAuth() == auth){
 			return gameHook.getStatus();
-		}else{
-			return new JSONObject("{\"ERROR\":4}"); //error 4 means id and auth don't match
-		}
 	}
 	
 	public AtomicInteger getNumPlayers(){
@@ -99,7 +124,7 @@ public class Game {
 		if(getPlayerById(id).getAuth() == auth){
 			return gameHook.doCommand(command);
 		}else{
-			return new JSONObject("{\"ERROR\":4}"); //error 4 means id and auth don't match
+			return new JSONObject("{\"ERROR\":\"4\"}"); //error 4 means id and auth don't match
 		}
 	}
 

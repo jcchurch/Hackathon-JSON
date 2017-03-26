@@ -18,7 +18,7 @@ import com.sun.net.httpserver.HttpServer;
  * @author Caleb Robinson
  * 
  */
-public class ServerBootstrap {
+public class SingleServerBootstrap {
 
 
 	public static final int TIMEOUT_LENGTH = 60000; //Timeout used when people are trying to connect to a game, in milliseconds
