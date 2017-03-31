@@ -33,34 +33,6 @@ def attack(id, auth, gameid, fromPlanet, toPlanet):
     f.close()
     return json.loads(response)
 
-def heuristic(mine, your):
-    speed = mine["SPEED"] / 125.0;
-    attackRatio = float(mine["ATTACK"]) / float(your["DEFENSE"])
-    growthRatio = float(your["GROWTH"]) / 3.0
-
-    if your["GROWTH"] == 2:
-        growthRatio = 3
-
-    shouldAttack = 0
-    if mine["TROOPS"] > 2:
-        shouldAttack = 1
-    if mine["TROOPS"] > 10:
-        shouldAttack = 2
-
-    owner = 2
-    if your["ID"] > -1:
-        owner = 1
-
-    troopFactor = 0
-    if mine["TROOPS"] * 2 > your["TROOPS"]:
-        troopFactor = 1
-    if mine["TROOPS"] > your["TROOPS"]:
-        troopFactor = 2
-
-    distance = 1.0 / ( (mine["X"]-your["X"])**2 + (mine["Y"]-your["Y"])**2 )**0.5
-
-    return speed * attackRatio * troopFactor * growthRatio * owner * distance * shouldAttack
-
 def getPlanets(myid, planets):
     myplanets = []
     notmyplanets = []
@@ -84,16 +56,8 @@ if __name__=='__main__':
     while keepPlaying:
         (myplanets, notmyplanets) = getPlanets(myid, status["MAP"])
 
-        bestFrom = -1
-        bestTo = -1
-        bestScore = -1000
-        for mine in myplanets:
-            for your in notmyplanets:
-                h = heuristic(mine, your)
-                if h > bestScore:
-                    bestFrom = mine["PLANETID"]
-                    bestTo = your["PLANETID"]
-                    bestScore = h
+        bestFrom = myplanets[0]
+        bestTo = notmyplanets[0]
 
         if bestFrom != -1 and bestTo != -1:
             attack(myid, auth, gameid, bestFrom, bestTo)
