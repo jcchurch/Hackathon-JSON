@@ -212,8 +212,7 @@ public class AlienInvasionClient {
 				}
 				wr.close();
 				rd.close();
-				resp = new JSONObject(response);
-
+				resp = new JSONObject(response); 
 			} catch (Exception e) { // PRO error handling!
 
 			} 
