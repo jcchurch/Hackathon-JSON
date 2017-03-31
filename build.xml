@@ -67,7 +67,7 @@
 	
 	<target name="createjar">
 		<mkdir dir="bin/jar"/>
-	    <jar destfile="bin/jar/Sever.jar" basedir="bin/" />
+	    <jar destfile="bin/jar/Server.jar" basedir="bin/" />
 	</target> 
 	
 </project>
